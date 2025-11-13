@@ -8,7 +8,7 @@ pipeline {
     stages {
 
         stage('Clone & Build Java Artifact on Master') {
-            agent { label 'master' }
+            agent { label 'built-in' }     // <-- MASTER NODE LABEL
             steps {
                 echo "Cloning repo & building Java app on Master node..."
 
@@ -27,13 +27,13 @@ pipeline {
         }
 
         stage('Build & Push Docker Image on Slave') {
-            agent { label 'node1' }     // your slave node label
+            agent { label 'node1' }     // <-- YOUR SLAVE NODE LABEL
             steps {
                 echo "Unstashing JAR on Slave node..."
                 unstash 'appJar'
 
                 withCredentials([usernamePassword(
-                    credentialsId: 'docker_creds',    // your Docker Hub credentials ID
+                    credentialsId: 'docker_creds',   // <-- DOCKER HUB CREDENTIAL ID
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
